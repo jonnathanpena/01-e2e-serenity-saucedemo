@@ -1,0 +1,43 @@
+schema: spec-driven
+
+context: |
+  Proyecto: Automatización E2E funcional del flujo de compra en SauceDemo.
+  Origen: Prueba Técnica V4 (Ejercicio 1) - Reto QA Automation (Sofka).
+
+  Objetivo de negocio:
+    Automatizar de extremo a extremo el flujo de compra en https://www.saucedemo.com/:
+      1. Autenticarse con usuario standard_user / secret_sauce.
+      2. Agregar dos productos al carrito.
+      3. Visualizar el carrito.
+      4. Completar el formulario de compra (checkout).
+      5. Finalizar la compra hasta la confirmacion "Thank you for your order!".
+
+  Stack tecnico:
+    - Lenguaje: Java 21
+    - Build: Maven (via Maven Wrapper ./mvnw, sin instalacion global)
+    - Framework: Serenity BDD 5.3.x
+    - BDD: Cucumber 7 (Gherkin en espanol, # language: es)
+    - Patron: Screenplay (Actors, Tasks, Questions, Interactions, Targets)
+    - WebDriver: Selenium 4 + Selenium Manager (auto-gestion de chromedriver)
+    - Runner: JUnit 5 Platform Suite
+    - Aserciones: serenity-ensure (Ensure)
+    - Reportes: serenity-maven-plugin (HTML living documentation)
+
+  Convenciones:
+    - Paquete base: com.sofka.qa.saucedemo
+    - Targets/locators en userinterface/, Tasks en tasks/, Questions en questions/.
+    - Features en src/test/resources/features, glue en stepdefinitions/.
+    - Ejecucion headless por defecto; configurable via serenity.conf.
+    - Datos de prueba parametrizados desde los Scenario/DataTable de Gherkin.
+
+  Criterios de aceptacion clave:
+    - El escenario principal debe llegar al mensaje de confirmacion del pedido.
+    - El carrito debe reflejar exactamente la cantidad de productos agregados.
+    - Reporte Serenity generado en target/site/serenity/index.html.
+
+# Per-artifact rules (optional)
+rules:
+  proposal:
+    - Enmarcar cada cambio en terminos de comportamiento observable del usuario (BDD).
+  tasks:
+    - Mantener cada Task del patron Screenplay con responsabilidad unica.

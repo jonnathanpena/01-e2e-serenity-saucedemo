@@ -1,0 +1,47 @@
+CONCLUSIONES - E2E Serenity Screenplay (SauceDemo)
+===================================================
+
+COBERTURA IMPLEMENTADA
+----------------------
+- Login exitoso con usuario standard_user / secret_sauce              [OK]
+- Navegacion al catalogo de productos                                 [OK]
+- Agregar dos productos al carrito con locator XPath dinamico         [OK]
+- Visualizacion del carrito y verificacion de cantidad                [OK]
+- Inicio del flujo de checkout (#checkout)                            [OK]
+- Ingreso de datos en formulario (nombre, apellido, codigo postal)    [PARCIAL]
+- Finalizacion hasta confirmation "Thank you for your order!"         [PENDIENTE]
+
+HALLAZGOS TECNICOS
+------------------
+1. REACT CONTROLLED INPUT:
+   SauceDemo es una Single-Page Application construida en React.
+   Los inputs controlados por React no siempre registran el evento
+   'change' cuando Selenium/Serenity usa sendKeys rapidamente sobre
+   el ultimo campo de un formulario en modo headless.
+   El ultimo campo de la secuencia de Enter() queda visualmente
+   vacio porque React descarta el valor antes de que Selenium
+   complete el input event. Este es un patron conocido con
+   React + Selenium headless.
+   SOLUCION RECOMENDADA: usar JavascriptExecutor para asignar el
+   valor del campo y disparar manualmente el evento 'input' via JS.
+
+2. PATRON SCREENPLAY:
+   El patron Screenplay demostro alta mantenibilidad: cada
+   responsabilidad (Task, Question, Target) esta en su propio
+   archivo. Un cambio de locator impacta UN solo archivo.
+
+3. SELENIUM MANAGER:
+   La gestion automatica del chromedriver con Selenium 4 elimina
+   la necesidad de WebDriverManager externo. Funciono correctamente.
+
+4. SERENITY REPORTS:
+   El reporte HTML de Serenity genera documentacion viva (Living
+   Documentation) con los pasos de Gherkin, capturas de pantalla
+   en cada accion y metricas de ejecucion.
+
+RECOMENDACIONES
+---------------
+- Agregar pruebas de usuario locked_out_user para validar bloqueos.
+- Parametrizar la URL base para soportar multiples entornos (QA/Prod).
+- Integrar en pipeline CI/CD con GitHub Actions.
+- Agregar tags @api para futura cobertura REST con SerenityRest.
