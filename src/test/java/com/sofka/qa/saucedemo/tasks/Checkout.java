@@ -1,5 +1,6 @@
 package com.sofka.qa.saucedemo.tasks;
 
+import com.sofka.qa.saucedemo.interactions.EnterWithJS;
 import com.sofka.qa.saucedemo.userinterface.CartPage;
 import com.sofka.qa.saucedemo.userinterface.CheckoutPage;
 import net.serenitybdd.screenplay.Actor;
@@ -35,7 +36,7 @@ public class Checkout implements Performable {
                 Click.on(CartPage.CHECKOUT_BUTTON),
                 Enter.theValue(firstName).into(CheckoutPage.FIRST_NAME_FIELD).thenHit(Keys.TAB),
                 Enter.theValue(lastName).into(CheckoutPage.LAST_NAME_FIELD).thenHit(Keys.TAB),
-                Enter.theValue(postalCode).into(CheckoutPage.POSTAL_CODE_FIELD).thenHit(Keys.TAB),
+                EnterWithJS.theValue(postalCode, CheckoutPage.POSTAL_CODE_FIELD),
                 Click.on(CheckoutPage.CONTINUE_BUTTON)
         );
     }
