@@ -34,7 +34,7 @@
 
 ## 9. Verify pipeline end-to-end
 
-- [ ] 9.1 Push the branch to GitHub and confirm the workflow run is created and the `e2e-tests` job is queued
-- [ ] 9.2 Confirm the job completes on `ubuntu-latest` with Java 21 and all scenarios pass
-- [ ] 9.3 Confirm the `serenity-report` artifact is downloadable from the Actions run summary
-- [ ] 9.4 Merge to `main` once the pipeline is green
+- [x] 9.1 Push the branch to GitHub and confirm the workflow run is created and the `e2e-tests` job is queued
+- [x] 9.2 Confirm the job completes on `ubuntu-latest` with Java 21 and all scenarios pass
+- [x] 9.3 Confirm the `serenity-report` artifact is downloadable from the Actions run summary
+- [x] 9.4 Merge to `main` once the pipeline is green
