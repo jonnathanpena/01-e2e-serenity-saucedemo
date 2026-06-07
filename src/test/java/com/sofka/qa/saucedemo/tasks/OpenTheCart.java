@@ -1,9 +1,12 @@
 package com.sofka.qa.saucedemo.tasks;
 
+import com.sofka.qa.saucedemo.userinterface.CartPage;
 import com.sofka.qa.saucedemo.userinterface.InventoryPage;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Performable;
 import net.serenitybdd.screenplay.actions.Click;
+import net.serenitybdd.screenplay.matchers.WebElementStateMatchers;
+import net.serenitybdd.screenplay.waits.WaitUntil;
 
 import static net.serenitybdd.screenplay.Tasks.instrumented;
 
@@ -18,6 +21,9 @@ public class OpenTheCart implements Performable {
 
     @Override
     public <T extends Actor> void performAs(T actor) {
-        actor.attemptsTo(Click.on(InventoryPage.CART_LINK));
+        actor.attemptsTo(
+                Click.on(InventoryPage.CART_LINK),
+                WaitUntil.the(CartPage.CART_LIST, WebElementStateMatchers.isPresent())
+        );
     }
 }
