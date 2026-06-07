@@ -29,13 +29,11 @@ public class EnterWithJS implements Interaction {
         js.executeScript(
             "var element = arguments[0];" +
             "var value = arguments[1];" +
-            "element.click();" +
             "element.focus();" +
             "var nativeSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;" +
             "nativeSetter.call(element, value);" +
-            "var inputEvent = new Event('input', { bubbles: true });" +
-            "element.dispatchEvent(inputEvent);" +
-            "element.blur();",
+            "element.dispatchEvent(new Event('input', { bubbles: true }));" +
+            "element.dispatchEvent(new Event('change', { bubbles: true }));",
             element, value
         );
     }

@@ -23,7 +23,7 @@ public class CheckoutPage {
 
     // Paso 3: Complete
     public static final Target COMPLETE_HEADER =
-            Target.the("encabezado de confirmacion").locatedBy(".complete-header");
+            Target.the("encabezado de confirmacion").locatedBy("[data-test='complete-header']");
 
     private CheckoutPage() {
     }

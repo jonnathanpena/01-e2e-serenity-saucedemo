@@ -18,10 +18,10 @@ public class InventoryPage {
                     + "and normalize-space()='{0}']]//button[contains(@class,'btn_inventory')]");
 
     public static final Target CART_BADGE =
-            Target.the("contador del carrito").locatedBy(".shopping_cart_badge");
+            Target.the("contador del carrito").locatedBy("[data-test='shopping-cart-badge']");
 
     public static final Target CART_LINK =
-            Target.the("icono del carrito").locatedBy(".shopping_cart_link");
+            Target.the("icono del carrito").locatedBy("[data-test='shopping-cart-link']");
 
     private InventoryPage() {
     }
