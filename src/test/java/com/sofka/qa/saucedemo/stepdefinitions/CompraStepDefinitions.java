@@ -4,6 +4,7 @@ import com.sofka.qa.saucedemo.questions.CartItemCount;
 import com.sofka.qa.saucedemo.questions.ConfirmationMessage;
 import com.sofka.qa.saucedemo.questions.LoginErrorMessage;
 import com.sofka.qa.saucedemo.tasks.AddItemsToCart;
+import com.sofka.qa.saucedemo.tasks.ResetAppState;
 import com.sofka.qa.saucedemo.tasks.Checkout;
 import com.sofka.qa.saucedemo.tasks.FinishThePurchase;
 import com.sofka.qa.saucedemo.tasks.Login;
@@ -34,6 +35,11 @@ public class CompraStepDefinitions {
     @Dado("que {string} intenta autenticarse en SauceDemo con el usuario {string} y la clave {string}")
     public void intentaAutenticarse(String actor, String usuario, String clave) {
         theActorCalled(actor).attemptsTo(Login.withCredentials(usuario, clave));
+    }
+
+    @Y("restablece el estado de la aplicación")
+    public void restablecerEstado() {
+        theActorInTheSpotlight().attemptsTo(ResetAppState.now());
     }
 
     @Cuando("agrega al carrito los siguientes productos:")

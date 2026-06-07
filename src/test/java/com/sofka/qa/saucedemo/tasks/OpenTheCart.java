@@ -23,7 +23,7 @@ public class OpenTheCart implements Performable {
     public <T extends Actor> void performAs(T actor) {
         actor.attemptsTo(
                 Click.on(InventoryPage.CART_LINK),
-                WaitUntil.the(CartPage.CHECKOUT_BUTTON, WebElementStateMatchers.isVisible())
+                WaitUntil.the(CartPage.CART_LIST, WebElementStateMatchers.isPresent())
         );
     }
 }
