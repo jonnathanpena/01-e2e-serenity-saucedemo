@@ -1,13 +1,14 @@
 package com.sofka.qa.saucedemo.tasks;
 
+import com.sofka.qa.saucedemo.interactions.ClickWithJS;
 import com.sofka.qa.saucedemo.interactions.EnterWithJS;
 import com.sofka.qa.saucedemo.userinterface.CartPage;
 import com.sofka.qa.saucedemo.userinterface.CheckoutPage;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Performable;
 import net.serenitybdd.screenplay.actions.Click;
-import net.serenitybdd.screenplay.actions.Enter;
-import org.openqa.selenium.Keys;
+import net.serenitybdd.screenplay.matchers.WebElementStateMatchers;
+import net.serenitybdd.screenplay.waits.WaitUntil;
 
 import static net.serenitybdd.screenplay.Tasks.instrumented;
 
@@ -34,10 +35,11 @@ public class Checkout implements Performable {
     public <T extends Actor> void performAs(T actor) {
         actor.attemptsTo(
                 Click.on(CartPage.CHECKOUT_BUTTON),
-                Enter.theValue(firstName).into(CheckoutPage.FIRST_NAME_FIELD).thenHit(Keys.TAB),
-                Enter.theValue(lastName).into(CheckoutPage.LAST_NAME_FIELD).thenHit(Keys.TAB),
+                WaitUntil.the(CheckoutPage.FIRST_NAME_FIELD, WebElementStateMatchers.isVisible()).forNoMoreThan(10).seconds(),
+                EnterWithJS.theValue(firstName, CheckoutPage.FIRST_NAME_FIELD),
+                EnterWithJS.theValue(lastName, CheckoutPage.LAST_NAME_FIELD),
                 EnterWithJS.theValue(postalCode, CheckoutPage.POSTAL_CODE_FIELD),
-                Click.on(CheckoutPage.CONTINUE_BUTTON)
+                ClickWithJS.on(CheckoutPage.CONTINUE_BUTTON)
         );
     }
 }

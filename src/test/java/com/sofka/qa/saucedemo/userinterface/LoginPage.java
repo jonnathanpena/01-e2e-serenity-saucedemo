@@ -17,7 +17,7 @@ public class LoginPage {
             Target.the("boton de login").locatedBy("#login-button");
 
     public static final Target ERROR_MESSAGE =
-            Target.the("mensaje de error").locatedBy("h3[data-test='error']");
+            Target.the("mensaje de error").locatedBy(".error-message-container.error h3[data-test='error']");
 
     private LoginPage() {
     }
