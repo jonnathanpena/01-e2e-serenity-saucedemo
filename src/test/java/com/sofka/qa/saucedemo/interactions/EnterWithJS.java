@@ -31,12 +31,10 @@ public class EnterWithJS implements Interaction {
             "var value = arguments[1];" +
             "element.click();" +
             "element.focus();" +
-            "element.value = '';" +
-            "element.value = value;" +
+            "var nativeSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;" +
+            "nativeSetter.call(element, value);" +
             "var inputEvent = new Event('input', { bubbles: true });" +
             "element.dispatchEvent(inputEvent);" +
-            "var changeEvent = new Event('change', { bubbles: true });" +
-            "element.dispatchEvent(changeEvent);" +
             "element.blur();",
             element, value
         );

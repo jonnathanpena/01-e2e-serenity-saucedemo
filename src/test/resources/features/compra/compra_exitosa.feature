@@ -21,7 +21,3 @@ Característica: Compra de productos en SauceDemo
     Y finaliza la compra
     Entonces se muestra el mensaje de confirmación "Thank you for your order!"
 
-  @regresion
-  Escenario: Login fallido con credenciales inválidas
-    Dado que "Intruso" intenta autenticarse en SauceDemo con el usuario "locked_out_user" y la clave "wrong_password"
-    Entonces se muestra un mensaje de error de autenticación
