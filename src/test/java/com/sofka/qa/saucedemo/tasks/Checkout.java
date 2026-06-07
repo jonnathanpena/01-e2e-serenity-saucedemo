@@ -35,7 +35,7 @@ public class Checkout implements Performable {
         actor.attemptsTo(
                 Click.on(CartPage.CHECKOUT_BUTTON),
                 Enter.theValue(firstName).into(CheckoutPage.FIRST_NAME_FIELD).thenHit(Keys.TAB),
-                Enter.theValue(lastName).into(CheckoutPage.LAST_NAME_FIELD).thenHit(Keys.TAB),
+                EnterWithJS.theValue(lastName, CheckoutPage.LAST_NAME_FIELD),
                 EnterWithJS.theValue(postalCode, CheckoutPage.POSTAL_CODE_FIELD),
                 Click.on(CheckoutPage.CONTINUE_BUTTON)
         );
