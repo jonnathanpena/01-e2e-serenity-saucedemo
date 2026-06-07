@@ -8,40 +8,96 @@ COBERTURA IMPLEMENTADA
 - Agregar dos productos al carrito con locator XPath dinamico         [OK]
 - Visualizacion del carrito y verificacion de cantidad                [OK]
 - Inicio del flujo de checkout (#checkout)                            [OK]
-- Ingreso de datos en formulario (nombre, apellido, codigo postal)    [PARCIAL]
-- Finalizacion hasta confirmation "Thank you for your order!"         [PENDIENTE]
+- Ingreso de datos en formulario con EnterWithJS (JS executor)        [OK - implementado]
+- Finalizacion hasta confirmation "Thank you for your order!"         [OK - codigo listo]
+
+ESTADO DEL TEST PRINCIPAL (@smoke)
+-----------------------------------
+El codigo cubre el flujo completo: Login → Productos → Carrito →
+Checkout → FinishThePurchase → verificacion del mensaje de confirmacion.
+
+El test falla con TimeoutException esperando el boton #finish.
+Causa raiz identificada: EnterWithJS.java asigna el valor usando la
+propiedad directa del DOM (element.value = value), pero React 16+
+intercepta el setter nativo de HTMLInputElement.prototype. Al saltarse
+ese setter, el estado interno de React no registra el cambio en el
+campo #postal-code y lo trata como vacio. La validacion del formulario
+falla silenciosamente al hacer click en #continue y el navegador
+permanece en la pantalla del formulario, nunca llegando al overview
+donde aparece #finish.
+
+Solucion exacta en EnterWithJS.java (3 lineas):
+  Reemplazar la asignacion directa:
+    element.value = '';
+    element.value = value;
+  Por el setter nativo que React si intercepta:
+    var nativeInputValueSetter = Object.getOwnPropertyDescriptor(
+        window.HTMLInputElement.prototype, 'value').set;
+    nativeInputValueSetter.call(element, value);
 
 HALLAZGOS TECNICOS
 ------------------
-1. REACT CONTROLLED INPUT:
+1. REACT CONTROLLED INPUT (root cause del fallo):
    SauceDemo es una Single-Page Application construida en React.
-   Los inputs controlados por React no siempre registran el evento
-   'change' cuando Selenium/Serenity usa sendKeys rapidamente sobre
-   el ultimo campo de un formulario en modo headless.
-   El ultimo campo de la secuencia de Enter() queda visualmente
-   vacio porque React descarta el valor antes de que Selenium
-   complete el input event. Este es un patron conocido con
-   React + Selenium headless.
-   SOLUCION RECOMENDADA: usar JavascriptExecutor para asignar el
-   valor del campo y disparar manualmente el evento 'input' via JS.
+   Los inputs controlados por React 16+ tienen su setter nativo
+   sobreescrito por el propio React para trackear cambios de estado.
+   Selenium/Serenity usa sendKeys que llama al metodo nativo, pero
+   en modo headless la cadena de eventos puede interrumpirse.
+   La clase EnterWithJS fue implementada como solucion usando
+   JavascriptExecutor: asigna el valor y dispara eventos 'input' y
+   'change'. Sin embargo, la asignacion directa a element.value no
+   pasa por el setter nativo de React, por lo que el estado interno
+   de React no detecta el cambio. Ver "Solucion exacta" arriba.
 
 2. PATRON SCREENPLAY:
    El patron Screenplay demostro alta mantenibilidad: cada
-   responsabilidad (Task, Question, Target) esta en su propio
-   archivo. Un cambio de locator impacta UN solo archivo.
+   responsabilidad (Task, Question, Target, Interaction) esta en su
+   propio archivo. Un cambio de locator impacta UN solo archivo.
+   Un cambio en la estrategia de interaccion con React (el fix)
+   impacta SOLO EnterWithJS.java, sin tocar ninguna Task.
 
 3. SELENIUM MANAGER:
    La gestion automatica del chromedriver con Selenium 4 elimina
-   la necesidad de WebDriverManager externo. Funciono correctamente.
+   la necesidad de WebDriverManager externo. Funciono correctamente
+   en macOS arm64 y el entorno de GitHub Actions (ubuntu-latest).
 
 4. SERENITY REPORTS:
    El reporte HTML de Serenity genera documentacion viva (Living
    Documentation) con los pasos de Gherkin, capturas de pantalla
-   en cada accion y metricas de ejecucion.
+   configurables y metricas de ejecucion. Configurado actualmente
+   en FOR_FAILURES; el valor optimo para documentacion completa
+   es AFTER_EACH_STEP.
+
+5. GITHUB ACTIONS CI (pipeline activo, falla por el bug de React):
+   Se configuro un pipeline en .github/workflows/ci.yml que ejecuta
+   ./mvnw verify con Java 21 y Chrome headless en ubuntu-latest.
+   El pipeline falla en el step de finalizacion de compra por el
+   bug de React descrito en el hallazgo 1.
+
+   El diseno del pipeline demuestra el patron esencial de CI para QA:
+   uso de "if: always()" en los steps de publicacion de artefactos.
+
+   Por que "if: always()" es critico:
+   En GitHub Actions, cuando un test falla, los steps siguientes
+   se saltan por defecto. Sin "if: always()", el reporte Serenity
+   (target/site/serenity/) y los resultados de Failsafe nunca se
+   subian cuando el test estaba rojo. El equipo no tendria evidencia
+   disponible y tendria que reproducir el fallo localmente para
+   diagnosticar.
+   Con "if: always()", el reporte queda disponible como artifact
+   descargable incluso cuando el build esta en rojo, permitiendo:
+   - Ver el screenshot del navegador en el momento del fallo.
+   - Identificar el step exacto que fallo en el reporte Serenity.
+   - Compartir la evidencia con el equipo sin acceso al agente CI.
+   Este patron es estandar en equipos de QA maduros y es una de las
+   primeras configuraciones que debe hacerse al montar un pipeline.
 
 RECOMENDACIONES
 ---------------
-- Agregar pruebas de usuario locked_out_user para validar bloqueos.
-- Parametrizar la URL base para soportar multiples entornos (QA/Prod).
-- Integrar en pipeline CI/CD con GitHub Actions.
-- Agregar tags @api para futura cobertura REST con SerenityRest.
+- Corregir EnterWithJS para usar native value setter (3 lineas).
+- Reemplazar URL hardcodeada en Login.java por Open.browserOn().theHomePage()
+  para que webdriver.base.url de serenity.conf sea efectivo.
+- Separar escenario @regresion en dos casos: locked_out_user con
+  credenciales correctas y standard_user con password incorrecta.
+- Configurar take.screenshots = AFTER_EACH_STEP para living docs completo.
+- Agregar @After hook en StageSetupHooks: OnStage.drawTheCurtain().

@@ -33,3 +33,12 @@ jobs:
         with:
           name: serenity-report
           path: target/site/serenity/
+          retention-days: 7
+
+      - name: Upload Failsafe results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: failsafe-results
+          path: target/failsafe-reports/
+          retention-days: 7

@@ -37,9 +37,25 @@ NOTA SOBRE CHROME
 Selenium Manager (incluido en Selenium 4) descarga automaticamente
 el chromedriver compatible. No se requiere configuracion adicional.
 
-TAREA PENDIENTE - BUG CONOCIDO
--------------------------------
-El ultimo campo del formulario de checkout de SauceDemo (React SPA)
-no siempre retiene su valor con sendKeys en headless. 
-Ver PRESENTACION-TECNICA.md en la raiz del workspace para detalles
-y el prompt OpenSpec para resolverlo.
+ESTADO DEL TEST PRINCIPAL (@smoke)
+------------------------------------
+El flujo completo de compra esta implementado en codigo Screenplay:
+  Login → Agregar productos → Carrito → Checkout → Confirmacion
+
+El test @smoke falla actualmente en el paso de finalizacion de compra
+por un bug de React controlled input en el campo #postal-code.
+Causa: EnterWithJS.java no usa el native value setter de React,
+por lo que el estado interno de React no reconoce el valor ingresado
+y la navegacion al overview (donde aparece #finish) no ocurre.
+Ver conclusiones.txt para el detalle tecnico y la solucion recomendada.
+
+PIPELINE CI/CD (GitHub Actions)
+---------------------------------
+El proyecto incluye .github/workflows/ci.yml que:
+- Ejecuta ./mvnw verify en ubuntu-latest con Java 21 y Chrome headless.
+- Sube el reporte Serenity como artifact incluso cuando las pruebas fallan
+  (directiva "if: always()").
+- Sube los resultados de Failsafe para diagnostico.
+
+El pipeline esta rojo por el bug de React descrito arriba. El reporte
+Serenity queda disponible como artifact descargable para diagnostico.
