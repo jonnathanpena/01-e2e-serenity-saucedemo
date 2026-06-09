@@ -25,7 +25,7 @@ jobs:
         run: chmod +x mvnw
 
       - name: Run E2E tests
-        run: ./mvnw verify
+        run: ./mvnw clean verify
 
       - name: Upload Serenity report
         if: always()
