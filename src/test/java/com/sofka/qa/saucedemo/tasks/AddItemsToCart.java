@@ -1,9 +1,9 @@
 package com.sofka.qa.saucedemo.tasks;
 
+import com.sofka.qa.saucedemo.interactions.ClickWithJS;
 import com.sofka.qa.saucedemo.userinterface.InventoryPage;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Performable;
-import net.serenitybdd.screenplay.actions.Click;
 
 import java.util.List;
 
@@ -27,7 +27,7 @@ public class AddItemsToCart implements Performable {
     @Override
     public <T extends Actor> void performAs(T actor) {
         productNames.forEach(name ->
-                actor.attemptsTo(Click.on(InventoryPage.ADD_TO_CART_BUTTON.of(name)))
+                actor.attemptsTo(ClickWithJS.on(InventoryPage.ADD_TO_CART_BUTTON.of(name)))
         );
     }
 }
