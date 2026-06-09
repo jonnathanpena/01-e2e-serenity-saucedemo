@@ -6,6 +6,11 @@ Característica: Autenticación fallida en SauceDemo
   Para proteger el acceso a la aplicación
 
   @regresion
-  Escenario: Login fallido con credenciales inválidas
-    Dado que "Intruso" intenta autenticarse en SauceDemo con el usuario "locked_out_user" y la clave "wrong_password"
+  Esquema del escenario: Login fallido con credenciales inválidas - <descripcion>
+    Dado que "Intruso" intenta autenticarse en SauceDemo con el usuario "<usuario>" y la clave "<clave>"
     Entonces se muestra un mensaje de error de autenticación
+
+    Ejemplos:
+      | usuario          | clave          | descripcion                              |
+      | locked_out_user  | secret_sauce   | usuario bloqueado con clave correcta     |
+      | standard_user    | wrong_password | usuario valido con contrasena incorrecta |

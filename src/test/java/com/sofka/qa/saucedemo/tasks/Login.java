@@ -30,7 +30,7 @@ public class Login implements Performable {
     @Override
     public <T extends Actor> void performAs(T actor) {
         actor.attemptsTo(
-                Open.url("https://www.saucedemo.com/"),
+                Open.relativeUrl("/"),
                 Enter.theValue(username).into(LoginPage.USERNAME_FIELD),
                 Enter.theValue(password).into(LoginPage.PASSWORD_FIELD),
                 Click.on(LoginPage.LOGIN_BUTTON)

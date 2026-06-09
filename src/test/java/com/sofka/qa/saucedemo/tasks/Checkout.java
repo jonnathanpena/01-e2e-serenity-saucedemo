@@ -2,11 +2,10 @@ package com.sofka.qa.saucedemo.tasks;
 
 import com.sofka.qa.saucedemo.interactions.ClickWithJS;
 import com.sofka.qa.saucedemo.interactions.EnterWithJS;
-import com.sofka.qa.saucedemo.userinterface.CartPage;
 import com.sofka.qa.saucedemo.userinterface.CheckoutPage;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Performable;
-import net.serenitybdd.screenplay.actions.Click;
+import net.serenitybdd.screenplay.actions.Open;
 import net.serenitybdd.screenplay.matchers.WebElementStateMatchers;
 import net.serenitybdd.screenplay.waits.WaitUntil;
 
@@ -34,7 +33,7 @@ public class Checkout implements Performable {
     @Override
     public <T extends Actor> void performAs(T actor) {
         actor.attemptsTo(
-                Click.on(CartPage.CHECKOUT_BUTTON),
+                Open.relativeUrl("/checkout-step-one.html"),
                 WaitUntil.the(CheckoutPage.FIRST_NAME_FIELD, WebElementStateMatchers.isVisible()).forNoMoreThan(10).seconds(),
                 EnterWithJS.theValue(firstName, CheckoutPage.FIRST_NAME_FIELD),
                 EnterWithJS.theValue(lastName, CheckoutPage.LAST_NAME_FIELD),
